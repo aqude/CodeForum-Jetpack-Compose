@@ -8,6 +8,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.codeforum.composables.HomeFeed
+import com.example.codeforum.composables.WelcomeScreen
 import com.example.codeforum.ui.theme.CodeForumTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,24 +20,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CodeForumTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "homeFeed"
+                ){
+                    composable("welcome"){
+                        WelcomeScreen(){
+//                            Here we will call Sign In Method
+                        }
+                    }
+                    composable("homeFeed"){
+                        HomeFeed()
+                    }
                 }
+
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CodeForumTheme {
-        Greeting("Android")
     }
 }

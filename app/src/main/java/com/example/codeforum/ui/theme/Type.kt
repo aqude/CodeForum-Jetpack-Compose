@@ -11,7 +11,7 @@ import com.example.codeforum.R
 private val NunitoBold = FontFamily(Font(R.font.nunitosans_bold))
 private val NunitoSemiBold = FontFamily(Font(R.font.nunitosans_semibold))
 private val NunitoLight = FontFamily(Font(R.font.nunitosans_light))
-private val AndroidEuclid = FontFamily(Font(R.font.androideuclid_bold))
+val AndroidEuclid = FontFamily(Font(R.font.androideuclid_bold))
 
 // Set of Material typography styles to start with
 val Typography = Typography(

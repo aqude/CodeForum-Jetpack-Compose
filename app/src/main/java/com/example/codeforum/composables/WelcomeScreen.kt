@@ -19,7 +19,9 @@ import com.example.codeforum.R
 import com.example.codeforum.ui.theme.CodeForumTheme
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    btnClick: () -> Unit
+) {
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
@@ -27,12 +29,16 @@ fun WelcomeScreen() {
     ) {
         WelcomeBackground()
 
-        WelcomeScreenContent()
+        WelcomeScreenContent(
+            btnClick = btnClick
+        )
     }
 }
 
 @Composable
-private fun WelcomeScreenContent() {
+private fun WelcomeScreenContent(
+    btnClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -51,7 +57,9 @@ private fun WelcomeScreenContent() {
         
         Spacer(modifier = Modifier.height(40.dp))
 
-        SignUpButton()
+        SignUpButton(
+            btnClick = btnClick
+        )
         
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -69,9 +77,13 @@ private fun AppSubtitle() {
 }
 
 @Composable
-private fun SignUpButton() {
+private fun SignUpButton(
+    btnClick: () -> Unit
+) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            btnClick()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
@@ -103,9 +115,9 @@ private fun LeafImage() {
     val isLight = MaterialTheme.colors.isLight
 
     val leafImageRes = if (isLight) {
-        R.drawable.ic_light_welcome_illos
+        R.drawable.ic_light_phone
     } else {
-        R.drawable.ic_dark_welcome_illos
+        R.drawable.ic_dark_phone
     }
 
     Image(
@@ -136,16 +148,20 @@ private fun WelcomeBackground() {
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewDarkWelcomScreen() {
+private fun PreviewDarkWelcomeScreen() {
     CodeForumTheme(darkTheme=true) {
-        WelcomeScreen()
+        WelcomeScreen() {
+
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewLightWelcomScreen() {
+private fun PreviewLightWelcomeScreen() {
     CodeForumTheme(darkTheme=false) {
-        WelcomeScreen()
+        WelcomeScreen() {
+
+        }
     }
 }
