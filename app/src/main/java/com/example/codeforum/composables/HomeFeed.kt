@@ -1,5 +1,6 @@
 package com.example.codeforum.composables
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,13 +34,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.codeforum.ui.theme.AndroidEuclid
-import com.example.codeforum.ui.theme.CodeForumTheme
-import com.example.codeforum.ui.theme.PinkText
+import com.example.codeforum.data.DummyData
+import com.example.codeforum.data.DummyData.postList
+import com.example.codeforum.models.Post
+import com.example.codeforum.models.User
+import com.example.codeforum.ui.theme.*
+import com.example.codeforum.utils.Utils.Companion.getTimeAgo
 import java.lang.reflect.Type
 
 @Composable
-fun HomeFeed() {
+fun HomeFeed(
+    onClick: (Int) -> Unit
+) {
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -49,8 +55,9 @@ fun HomeFeed() {
             modifier = Modifier
                 .fillMaxSize()
         ) {
+            val count = postList.size
             items(
-                count = 5
+                count = count
             ) {
                 PostItem(
                     modifier = Modifier
@@ -61,6 +68,8 @@ fun HomeFeed() {
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colors.primary)
                         .padding(16.dp),
+                    post = postList[it],
+                    onClick = onClick
                 )
             }
         }
@@ -70,17 +79,35 @@ fun HomeFeed() {
 @Composable
 fun PostItem(
     modifier: Modifier,
+    post: Post,
+    onClick: (Int) -> Unit
 ) {
-    Column(modifier) {
-        UserInfoSection()
+    var likedBy by remember {
+        mutableStateOf(post.likedBy.size)
+    }
 
-        PostMessage()
+    Column(modifier) {
+        UserInfoSection(
+            user = post.createdBy,
+            createdAt = getTimeAgo(post.createdAt),
+            onClick = onClick
+        )
+
+        PostMessage(
+            postMessage = post.postText
+        )
 
         Row() {
-            LikeButtonIcon()
+            LikeButtonIcon(){
+                if(it) {
+                    likedBy++
+                } else {
+                    likedBy--
+                }
+            }
 
             Text(
-                text = "254",
+                text = "$likedBy",
                 modifier = Modifier.padding(top = 12.dp),
                 fontWeight = FontWeight.SemiBold
             )
@@ -91,14 +118,14 @@ fun PostItem(
 
 @Composable
 private fun EditPostButtonIcon(
-    isAuthor: Boolean = true
+    isAuthor: Boolean
 ) {
     val isLight = MaterialTheme.colors.isLight
 
     val tint = if (isLight) {
-        Color.Magenta
+        Pink900
     } else {
-        Color.Yellow
+        Green300
     }
     if(isAuthor) {
         Icon(
@@ -112,7 +139,7 @@ private fun EditPostButtonIcon(
 
 @Composable
 private fun LikeButtonIcon(
-
+    onLiked: (Boolean) -> Unit
 ) {
     var isLiked by remember {
         mutableStateOf(false)
@@ -141,13 +168,14 @@ private fun LikeButtonIcon(
             )
             .clickable {
                 isLiked = !isLiked
+                onLiked(isLiked)
             }
     )
 }
 
 @Composable
 private fun PostMessage(
-    postMessage: String = "When you give Sir Ravindra Jadeja one ball to get 2 runs he will win it with one ball to spare !! \n\nSir Ravindra Jadeja an Absolute Legend!!"
+    postMessage: String
 ) {
     Text(
         text = postMessage,
@@ -161,32 +189,58 @@ private fun PostMessage(
 }
 
 @Composable
-private fun UserInfoSection() {
+private fun UserInfoSection(
+    user: User,
+    createdAt: String,
+    onClick: (Int) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        UserImageAndDetails()
+        UserImageAndDetails(
+            user = user,
+            createdAt = createdAt,
+            onClick = onClick
+        )
 
-        EditPostButtonIcon()
+        EditPostButtonIcon(
+            user.userDisplayName.equals("Shiba Inu")
+        )
     }
 }
 
 @Composable
-private fun UserImageAndDetails() {
-    Row() {
-        UserDisplayImage()
+private fun UserImageAndDetails(
+    user: User,
+    createdAt: String,
+    onClick: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clickable {
+                var userId = user.userId.toInt()
+                Log.d("HomeFeed", "User Id: $userId pressed")
+                onClick(userId)
+            }
+    ) {
+        UserDisplayImage(
+            userImage = painterResource(id = user.imageURL)
+        )
 
-        UserDetailsColumn()
+        UserDetailsColumn(
+            createdAt = createdAt,
+            createdBy = user.userDisplayName
+        )
     }
 }
 
 @Composable
 private fun UserDisplayImage(
-    userImage: Painter = painterResource(id = R.drawable.ic_user)
+    userImage: Painter
 ) {
-    Icon(
+    Image(
         painter = userImage,
         contentDescription = "User Image",
         modifier = Modifier
@@ -196,21 +250,30 @@ private fun UserDisplayImage(
 }
 
 @Composable
-private fun UserDetailsColumn() {
+private fun UserDetailsColumn(
+    createdBy: String,
+    createdAt: String
+) {
     Column(
         modifier = Modifier
             .wrapContentWidth()
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        UserDisplayName()
+        UserDisplayName(
+            name = createdBy
+        )
 
-        CreatedAt()
+        CreatedAt(
+            createdAt = createdAt
+        )
     }
 }
 
 @Composable
-private fun CreatedAt() {
+private fun CreatedAt(
+    createdAt: String
+) {
 
     val isLight = MaterialTheme.colors.isLight
 
@@ -221,7 +284,7 @@ private fun CreatedAt() {
     }
 
     Text(
-        text = "Just now",
+        text = createdAt,
         fontWeight = FontWeight.Light,
         textAlign = TextAlign.Center,
         color = textColor,
@@ -231,7 +294,7 @@ private fun CreatedAt() {
 
 @Composable
 private fun UserDisplayName(
-    name: String = "Mahendra Singh Dhoni"
+    name: String
 ) {
     Text(
         text = name,
@@ -249,7 +312,9 @@ private fun UserDisplayName(
 @Composable
 private fun PreviewDarkHomeFeed() {
     CodeForumTheme(darkTheme=true) {
-        HomeFeed()
+        HomeFeed(){
+
+        }
     }
 }
 
@@ -257,6 +322,8 @@ private fun PreviewDarkHomeFeed() {
 @Composable
 private fun PreviewLightHomeFeed() {
     CodeForumTheme(darkTheme=false) {
-        HomeFeed()
+        HomeFeed(){
+
+        }
     }
 }

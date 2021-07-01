@@ -2,7 +2,10 @@ package com.example.codeforum.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.MaterialTheme
@@ -22,10 +25,13 @@ import com.example.codeforum.ui.theme.CodeForumTheme
 fun WelcomeScreen(
     btnClick: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         WelcomeBackground()
 
