@@ -42,12 +42,14 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("homeFeed"){
-                        HomeFeed(){
-                            Log.d("HomeFeed", "User Id: $it received")
-                            navController.navigate(
-                                "userInfo/$it"
-                            )
-                        }
+                        HomeFeed(
+                            onClick = {
+                                Log.d("HomeFeed", "User Id: $it received")
+                                navController.navigate(
+                                    "userInfo/$it"
+                                )
+                            }
+                        )
                     }
                     composable(
                         route = "userInfo/{userId}",

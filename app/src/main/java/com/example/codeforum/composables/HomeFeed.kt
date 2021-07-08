@@ -1,17 +1,16 @@
 package com.example.codeforum.composables
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.codeforum.MainActivity
 import com.example.codeforum.data.DummyData
 import com.example.codeforum.data.DummyData.postList
 import com.example.codeforum.models.Post
@@ -42,37 +42,66 @@ import com.example.codeforum.ui.theme.*
 import com.example.codeforum.utils.Utils.Companion.getTimeAgo
 import java.lang.reflect.Type
 
+fun fabClick() {
+    Log.d("FAB", "New Post FAB Clicked")
+}
+
 @Composable
 fun HomeFeed(
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    onFABClick: () -> Unit = {
+        fabClick()
+    }
 ) {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier
-            .fillMaxSize(),
+    Scaffold(
+        floatingActionButton = {
+            AddNewFAB(
+                onFABClick = onFABClick
+            )
+        }
     ) {
-        LazyColumn(
+        Surface(
+            color = MaterialTheme.colors.background,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
-            val count = postList.size
-            items(
-                count = count
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                PostItem(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                        .shadow(10.dp, RoundedCornerShape(10.dp))
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colors.primary)
-                        .padding(16.dp),
-                    post = postList[it],
-                    onClick = onClick
-                )
+                val count = postList.size
+                items(
+                    count = count
+                ) {
+                    PostItem(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                            .shadow(10.dp, RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colors.primary)
+                            .padding(16.dp),
+                        post = postList[it],
+                        onClick = onClick
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun AddNewFAB(
+    onFABClick: () -> Unit
+) {
+    FloatingActionButton(
+        onClick = onFABClick
+    ) {
+       Icon(
+           imageVector = Icons.Default.Add,
+           contentDescription = null
+       )
     }
 }
 
@@ -312,9 +341,11 @@ private fun UserDisplayName(
 @Composable
 private fun PreviewDarkHomeFeed() {
     CodeForumTheme(darkTheme=true) {
-        HomeFeed(){
+        HomeFeed(
+            onClick = {
 
-        }
+            }
+        )
     }
 }
 
@@ -322,8 +353,10 @@ private fun PreviewDarkHomeFeed() {
 @Composable
 private fun PreviewLightHomeFeed() {
     CodeForumTheme(darkTheme=false) {
-        HomeFeed(){
+        HomeFeed(
+            onClick = {
 
-        }
+            }
+        )
     }
 }
