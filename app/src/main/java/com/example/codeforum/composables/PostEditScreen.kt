@@ -27,7 +27,8 @@ import com.example.codeforum.ui.theme.CodeForumTheme
 fun EditPost(
     onButtonClick: () -> Unit,
     textFieldHint: String = "What do you want to talk about?",
-    buttonText: String
+    buttonText: String,
+    postTextValue: String = ""
 ) {
     Surface(
         modifier = Modifier
@@ -47,7 +48,8 @@ fun EditPost(
             Spacer(modifier = Modifier.height(8.dp))
 
             postTextField(
-                textFieldHint = textFieldHint
+                textFieldHint = textFieldHint,
+                postTextValue = postTextValue
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -64,10 +66,11 @@ fun EditPost(
 
 @Composable
 private fun postTextField(
-    textFieldHint: String
+    textFieldHint: String,
+    postTextValue: String = ""
 ) {
     var postTextState by remember {
-        mutableStateOf("")
+        mutableStateOf(postTextValue)
     }
 
     TextField(

@@ -45,7 +45,8 @@ import java.lang.reflect.Type
 @Composable
 fun HomeFeed(
     onClick: (Int) -> Unit,
-    onFABClick: () -> Unit
+    onFABClick: () -> Unit,
+    onEditButtonPressed: (String) -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
@@ -77,7 +78,8 @@ fun HomeFeed(
                             .background(MaterialTheme.colors.primary)
                             .padding(16.dp),
                         post = postList[it],
-                        onClick = onClick
+                        onClick = onClick,
+                        onEditButtonPressed = onEditButtonPressed
                     )
                 }
             }
@@ -103,7 +105,8 @@ private fun AddNewFAB(
 fun PostItem(
     modifier: Modifier,
     post: Post,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    onEditButtonPressed: (String) -> Unit
 ) {
     var likedBy by remember {
         mutableStateOf(post.likedBy.size)
@@ -113,7 +116,9 @@ fun PostItem(
         UserInfoSection(
             user = post.createdBy,
             createdAt = getTimeAgo(post.createdAt),
-            onClick = onClick
+            onClick = onClick,
+            onEditButtonPressed = onEditButtonPressed,
+            postMessage = post.postText
         )
 
         PostMessage(
@@ -141,7 +146,9 @@ fun PostItem(
 
 @Composable
 private fun EditPostButtonIcon(
-    isAuthor: Boolean
+    isAuthor: Boolean,
+    onEditButtonPressed: (String) -> Unit,
+    postMessage: String
 ) {
     val isLight = MaterialTheme.colors.isLight
 
@@ -154,7 +161,11 @@ private fun EditPostButtonIcon(
         Icon(
             imageVector = Icons.Default.Edit,
             contentDescription = "User Image",
-            tint = tint
+            tint = tint,
+            modifier = Modifier
+                .clickable {
+                    onEditButtonPressed(postMessage)
+                }
         )
     }
 }
@@ -215,7 +226,9 @@ private fun PostMessage(
 private fun UserInfoSection(
     user: User,
     createdAt: String,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    onEditButtonPressed: (String) -> Unit,
+    postMessage: String
 ) {
     Row(
         modifier = Modifier
@@ -231,7 +244,9 @@ private fun UserInfoSection(
         )
 
         EditPostButtonIcon(
-            user.userDisplayName.equals("Shiba Inu")
+            user.userDisplayName.equals("Shiba Inu"),
+            onEditButtonPressed = onEditButtonPressed,
+            postMessage = postMessage
         )
     }
 }
@@ -341,6 +356,9 @@ private fun PreviewDarkHomeFeed() {
             },
             onFABClick = {
 
+            },
+            onEditButtonPressed = {
+
             }
         )
     }
@@ -355,6 +373,9 @@ private fun PreviewLightHomeFeed() {
 
             },
             onFABClick = {
+
+            },
+            onEditButtonPressed = {
 
             }
         )

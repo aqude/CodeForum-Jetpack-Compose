@@ -57,6 +57,12 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     "newPost"
                                 )
+                            },
+                            onEditButtonPressed = {
+                                Log.d("editPost", "Inside MainActivity: onEditButtonPressed method")
+                                navController.navigate(
+                                    "editPost/$it"
+                                )
                             }
                         )
                     }
@@ -91,13 +97,14 @@ class MainActivity : ComponentActivity() {
                         EditPost(
                             onButtonClick = {
                                 navController.navigate("homeFeed")
+                                Toast.makeText(this@MainActivity, "Posting...", Toast.LENGTH_SHORT).show()
                             },
                             textFieldHint = "What do you want to talk about?",
                             buttonText = "Post"
                         )
                     }
                     composable(
-                        route = "ediPost/{postText}",
+                        route = "editPost/{postText}",
                         arguments = listOf(
                             navArgument("postText"){
                                 type = NavType.StringType
@@ -105,14 +112,18 @@ class MainActivity : ComponentActivity() {
                         )
                     ){
                         var textFieldHint = remember {
-                            it?.arguments?.getString("postText")
+                            it.arguments?.getString("postText")
                         }
+
+                        Log.d("editPost", "Text: $textFieldHint parsed fromm navArguments")
                         EditPost(
                             onButtonClick = {
                                 navController.navigate("homeFeed")
+                                Toast.makeText(this@MainActivity, "Updating...", Toast.LENGTH_SHORT).show()
                             },
                             textFieldHint = textFieldHint!!,
-                            buttonText = "Update"
+                            buttonText = "Update",
+                            postTextValue = textFieldHint
                         )
                     }
                 }
