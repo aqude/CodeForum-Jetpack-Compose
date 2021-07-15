@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -14,9 +15,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import com.example.codeforum.composables.EditPost
 import com.example.codeforum.composables.HomeFeed
 import com.example.codeforum.composables.UserInfoScreen
 import com.example.codeforum.composables.WelcomeScreen
@@ -48,6 +52,11 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     "userInfo/$it"
                                 )
+                            },
+                            onFABClick = {
+                                navController.navigate(
+                                    "newPost"
+                                )
                             }
                         )
                     }
@@ -75,6 +84,36 @@ class MainActivity : ComponentActivity() {
                         else {
                             Log.d("HomeFeed", "User Id: $userId is Null")
                         }
+                    }
+                    composable(
+                        route = "newPost"
+                    ){
+                        EditPost(
+                            onButtonClick = {
+                                navController.navigate("homeFeed")
+                            },
+                            textFieldHint = "What do you want to talk about?",
+                            buttonText = "Post"
+                        )
+                    }
+                    composable(
+                        route = "ediPost/{postText}",
+                        arguments = listOf(
+                            navArgument("postText"){
+                                type = NavType.StringType
+                            }
+                        )
+                    ){
+                        var textFieldHint = remember {
+                            it?.arguments?.getString("postText")
+                        }
+                        EditPost(
+                            onButtonClick = {
+                                navController.navigate("homeFeed")
+                            },
+                            textFieldHint = textFieldHint!!,
+                            buttonText = "Update"
+                        )
                     }
                 }
 

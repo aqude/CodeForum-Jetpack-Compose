@@ -30,7 +30,7 @@ fun WelcomeScreen(
     Surface(
         color = MaterialTheme.colors.primary,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxHeight()
             .verticalScroll(scrollState)
     ) {
         WelcomeBackground()
@@ -47,26 +47,30 @@ private fun WelcomeScreenContent(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(72.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 
-        LeafImage()
+        PhoneImage()
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         LogoImage()
 
         AppSubtitle()
         
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        SignUpButton(
-            btnClick = btnClick
+        CodeForumButton(
+            btnClick = btnClick,
+            buttonText = "Sign up with Google",
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
 
     }
@@ -83,24 +87,25 @@ private fun AppSubtitle() {
 }
 
 @Composable
-private fun SignUpButton(
-    btnClick: () -> Unit
+fun CodeForumButton(
+    btnClick: () -> Unit,
+    buttonText: String,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = {
             btnClick()
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .padding(horizontal = 16.dp),
+            .height(48.dp),
         colors = buttonColors(
             backgroundColor = MaterialTheme.colors.secondary
         ),
         shape = MaterialTheme.shapes.medium
     ) {
         Text(
-            text = "Sign up with Google"
+            text = buttonText
         )
     }
 }
@@ -117,7 +122,7 @@ private fun LogoImage() {
 }
 
 @Composable
-private fun LeafImage() {
+private fun PhoneImage() {
     val isLight = MaterialTheme.colors.isLight
 
     val leafImageRes = if (isLight) {
@@ -146,9 +151,9 @@ private fun WelcomeBackground() {
     Image(
         painter = painterResource(id = backgroundImageRes),
         contentDescription = null,
-        contentScale = ContentScale.FillBounds,
+        contentScale = ContentScale.FillHeight,
         modifier = Modifier
-            .fillMaxSize()
+            .offset(y=18.dp)
     )
 }
 

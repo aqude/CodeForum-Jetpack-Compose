@@ -119,20 +119,20 @@ private fun UserInfoSection(
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            CoderIcon()
+            ProfileScreenBody()
         }
     }
 }
 
 @Composable
-private fun CoderIcon() {
-    Icon(
-        imageVector = Icons.Default.AccountCircle,
-        contentDescription = "Coder Image",
-        modifier = Modifier
-            .size(200.dp),
-        tint = MaterialTheme.colors.onPrimary.copy(0.3f)
-    )
+private fun ProfileScreenBody() {
+//    Icon(
+//        imageVector = Icons.Default.AccountCircle,
+//        contentDescription = "Coder Image",
+//        modifier = Modifier
+//            .size(200.dp),
+//        tint = MaterialTheme.colors.onPrimary.copy(0.3f)
+//    )
 }
 
 @Composable

@@ -42,16 +42,10 @@ import com.example.codeforum.ui.theme.*
 import com.example.codeforum.utils.Utils.Companion.getTimeAgo
 import java.lang.reflect.Type
 
-fun fabClick() {
-    Log.d("FAB", "New Post FAB Clicked")
-}
-
 @Composable
 fun HomeFeed(
     onClick: (Int) -> Unit,
-    onFABClick: () -> Unit = {
-        fabClick()
-    }
+    onFABClick: () -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
@@ -230,8 +224,10 @@ private fun UserInfoSection(
     ) {
         UserImageAndDetails(
             user = user,
-            createdAt = createdAt,
-            onClick = onClick
+            onClick = onClick,
+            belowUserDisplayName = {
+                CreatedAt(createdAt = createdAt)
+            }
         )
 
         EditPostButtonIcon(
@@ -241,10 +237,10 @@ private fun UserInfoSection(
 }
 
 @Composable
-private fun UserImageAndDetails(
+fun UserImageAndDetails(
     user: User,
-    createdAt: String,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    belowUserDisplayName: @Composable () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -259,7 +255,7 @@ private fun UserImageAndDetails(
         )
 
         UserDetailsColumn(
-            createdAt = createdAt,
+            belowUserDisplayName = belowUserDisplayName,
             createdBy = user.userDisplayName
         )
     }
@@ -281,7 +277,7 @@ private fun UserDisplayImage(
 @Composable
 private fun UserDetailsColumn(
     createdBy: String,
-    createdAt: String
+    belowUserDisplayName: @Composable () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -293,9 +289,7 @@ private fun UserDetailsColumn(
             name = createdBy
         )
 
-        CreatedAt(
-            createdAt = createdAt
-        )
+        belowUserDisplayName()
     }
 }
 
@@ -344,6 +338,9 @@ private fun PreviewDarkHomeFeed() {
         HomeFeed(
             onClick = {
 
+            },
+            onFABClick = {
+
             }
         )
     }
@@ -355,6 +352,9 @@ private fun PreviewLightHomeFeed() {
     CodeForumTheme(darkTheme=false) {
         HomeFeed(
             onClick = {
+
+            },
+            onFABClick = {
 
             }
         )
