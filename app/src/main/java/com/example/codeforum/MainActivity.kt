@@ -32,93 +32,97 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CodeForumTheme {
-                val navController = rememberNavController()
+                Navigation()
+            }
+        }
+    }
 
-                NavHost(
-                    navController = navController,
-                    startDestination = Screen.WelcomeScreen.route
-                ){
-                    composable(Screen.WelcomeScreen.route){
-                        WelcomeScreen(){
-//                            Here we will call Sign In Method
-                            navController.navigate(
-                                route = Screen.HomeFeed.route
-                            )
-                        }
-                    }
-                    composable(Screen.HomeFeed.route){
-                        HomeFeed(
-                            onClick = {
-                                navController.navigate(
-                                    Screen.UserInfoScreen.route + "/$it"
-                                )
-                            },
-                            onFABClick = {
-                                navController.navigate(
-                                    Screen.NewPost.route
-                                )
-                            },
-                            onEditButtonPressed = {
-                                navController.navigate(
-                                    Screen.EditPost.route + "/$it"
-                                )
-                            }
-                        )
-                    }
-                    composable(
-                        route = Screen.UserInfoScreen.route + "/{userId}",
-                        arguments = listOf(
-                            navArgument("userId"){
-                                type = NavType.IntType
-                            }
-                        )
-                    ){
-                        var userId = remember{
-                            it.arguments?.getInt("userId")
-                        }
-                        val scrollState = rememberScrollState()
-                        UserInfoScreen(
-                            userId = userId!!,
-                            modifier = Modifier.verticalScroll(scrollState)
-                        )
-                    }
-                    composable(
-                        route = Screen.NewPost.route
-                    ){
-                        EditPost(
-                            onButtonClick = {
-                                navController.navigate(Screen.HomeFeed.route)
-                                Toast.makeText(this@MainActivity, "Posting...", Toast.LENGTH_SHORT).show()
-                            },
-                            textFieldHint = "What do you want to talk about?",
-                            buttonText = "Post"
-                        )
-                    }
-                    composable(
-                        route = Screen.EditPost.route + "/{postText}",
-                        arguments = listOf(
-                            navArgument("postText"){
-                                type = NavType.StringType
-                            }
-                        )
-                    ){
-                        var textFieldHint = remember {
-                            it.arguments?.getString("postText")
-                        }
+    @Composable
+    private fun Navigation() {
+        val navController = rememberNavController()
 
-                        Log.d("editPost", "Text: $textFieldHint parsed fromm navArguments")
-                        EditPost(
-                            onButtonClick = {
-                                navController.navigate(Screen.HomeFeed.route)
-                                Toast.makeText(this@MainActivity, "Updating...", Toast.LENGTH_SHORT).show()
-                            },
-                            textFieldHint = textFieldHint!!,
-                            buttonText = "Update",
-                            postTextValue = textFieldHint
+        NavHost(
+            navController = navController,
+            startDestination = Screen.WelcomeScreen.route
+        ) {
+            composable(Screen.WelcomeScreen.route) {
+                WelcomeScreen() {
+    //                            Here we will call Sign In Method
+                    navController.navigate(
+                        route = Screen.HomeFeed.route
+                    )
+                }
+            }
+            composable(Screen.HomeFeed.route) {
+                HomeFeed(
+                    onClick = {
+                        navController.navigate(
+                            Screen.UserInfoScreen.route + "/$it"
+                        )
+                    },
+                    onFABClick = {
+                        navController.navigate(
+                            Screen.NewPost.route
+                        )
+                    },
+                    onEditButtonPressed = {
+                        navController.navigate(
+                            Screen.EditPost.route + "/$it"
                         )
                     }
+                )
+            }
+            composable(
+                route = Screen.UserInfoScreen.route + "/{userId}",
+                arguments = listOf(
+                    navArgument("userId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) {
+                var userId = remember {
+                    it.arguments?.getInt("userId")
+                }
+                val scrollState = rememberScrollState()
+                UserInfoScreen(
+                    userId = userId!!,
+                    modifier = Modifier.verticalScroll(scrollState)
+                )
+            }
+            composable(
+                route = Screen.NewPost.route
+            ) {
+                EditPost(
+                    onButtonClick = {
+                        navController.navigate(Screen.HomeFeed.route)
+                        Toast.makeText(this@MainActivity, "Posting...", Toast.LENGTH_SHORT).show()
+                    },
+                    textFieldHint = "What do you want to talk about?",
+                    buttonText = "Post"
+                )
+            }
+            composable(
+                route = Screen.EditPost.route + "/{postText}",
+                arguments = listOf(
+                    navArgument("postText") {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                var textFieldHint = remember {
+                    it.arguments?.getString("postText")
                 }
 
+                Log.d("editPost", "Text: $textFieldHint parsed fromm navArguments")
+                EditPost(
+                    onButtonClick = {
+                        navController.navigate(Screen.HomeFeed.route)
+                        Toast.makeText(this@MainActivity, "Updating...", Toast.LENGTH_SHORT).show()
+                    },
+                    textFieldHint = textFieldHint!!,
+                    buttonText = "Update",
+                    postTextValue = textFieldHint
+                )
             }
         }
     }
